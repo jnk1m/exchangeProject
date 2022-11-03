@@ -5,6 +5,7 @@ import com.nhnacademy.gwjs.exception.NegativeArithmeticException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -82,11 +83,54 @@ public class BankServiceTest {
     @Test
     @DisplayName("원화에서 달러 환전 성공")
     void exchange_won_to_dollar_success(){
-        Money wonMoney = bank.mintMoney(2500,Currency.WON);
+        Money money = bank.mintMoney(2500,Currency.WON);
 
-        Money dollar = bank.exchange(wonMoney);
+        Money dollar = bank.exchange(money);
 
+        assertThat(dollar).isNotNull();
+        assertThat(dollar.getAmount()).isEqualTo(2.13);
+    }
+    @Test
+    @DisplayName("원화에서 달러 환전 및 반올림 성공")
+    void exchange_won_to_dollar_success_decimal(){
+        Money money = bank.mintMoney(2555,Currency.WON);
 
+        Money dollar = bank.exchange(money);
+
+        assertThat(dollar).isNotNull();
+        assertThat(dollar.getAmount()).isEqualTo(2.17);
+    }
+
+    @Test
+    @DisplayName("달러에서 원화 환전 성공")
+    void exchange_dollar_to_won_success(){
+        Money money = bank.mintMoney(5.25,Currency.DOLLAR);
+
+        Money won = bank.exchange(money);
+
+        assertThat(won).isNotNull();
+        assertThat(won.getAmount()).isEqualTo(4460);
+    }
+
+    @Test
+    @DisplayName("달러에서 원화 환전 및 반올림 성공")
+    void exchange_dollar_to_won_success_decimal(){
+        Money money = bank.mintMoney(2.355,Currency.DOLLAR);
+
+        Money won = bank.exchange(money);
+
+        assertThat(won).isNotNull();
+        assertThat(won.getAmount()).isEqualTo(2000);
+    }
+
+    @Test
+    @DisplayName("환전 수수료 적용 여부")
+    void exchangeFee_won_to_dollar_charged(){
+        Money money = bank.mintMoney(15,Currency.DOLLAR);
+
+        double amountAfterFeeDeduction = bank.calculateExchangeFee(money);
+
+        assertThat(amountAfterFeeDeduction).isEqualTo(12.75);
 
     }
 

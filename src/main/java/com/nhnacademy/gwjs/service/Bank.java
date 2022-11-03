@@ -33,6 +33,26 @@ public class Bank {
 
         return Money.of(money1.getAmount() - money2.getAmount(), money1.getCurrency());
     }
+    
+    public Money exchange(Money money) {
+        double changedMoney = 0;
+
+        if(money.getCurrency() == Currency.WON){ //원화에서 달러
+            changedMoney = calculateExchangeFee(money) / Currency.DOLLAR.getRate();
+            double roundMoney = Math.round(changedMoney * 100) / 100.0;
+            return Money.of(roundMoney,Currency.DOLLAR);
+        }
+
+        changedMoney = calculateExchangeFee(money) * Currency.DOLLAR.getRate(); //달러에서 원화
+        double roundMoney = Math.round(changedMoney / 10) * 10.0;
+        return Money.of(roundMoney,Currency.WON);
+
+
+    }
+    public double calculateExchangeFee(Money money) {
+        return money.getAmount() - money.getAmount() * 0.15;
+    }
+
 
 
 
@@ -45,18 +65,5 @@ public class Bank {
         return money1.getCurrency();
     }
 
-    public Money exchange(Money money) {
-        double changedMoney = 0;
 
-        if(money.getCurrency() == Currency.WON){
-            changedMoney = money.getAmount() / Currency.DOLLAR.getRate();
-            return Money.of(changedMoney,Currency.DOLLAR);
-        }
-        
-        if(money.getCurrency() == Currency.DOLLAR){
-            changedMoney = money.getAmount() * Currency.WON.getRate();
-            return Money.of(changedMoney,Currency.WON);
-        }
-
-    }
 }
