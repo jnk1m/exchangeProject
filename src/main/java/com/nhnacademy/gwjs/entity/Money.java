@@ -22,9 +22,7 @@ public class Money {
     }
 
     public static Money of(double amount, Currency currency) {
-        if (amount < 0) {
-            throw new MintNegativeValueMoneyException(amount);
-        }
+        isPositiveAmount(amount);
         return new Money(amount, currency);
     }
 
@@ -39,5 +37,11 @@ public class Money {
     @Override
     public int hashCode() {
         return Objects.hash(amount, currency);
+    }
+
+    private static void isPositiveAmount(double amount) {
+        if (amount < 0) {
+            throw new MintNegativeValueMoneyException(amount);
+        }
     }
 }

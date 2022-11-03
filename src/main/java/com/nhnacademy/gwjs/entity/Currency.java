@@ -2,7 +2,8 @@ package com.nhnacademy.gwjs.entity;
 
 public enum Currency {
     WON(1),
-    DOLLAR(1000);
+    DOLLAR(1000),
+    EURO(1300);
 
     private final double rate;
 
